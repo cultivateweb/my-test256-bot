@@ -2,28 +2,55 @@ import { Injectable } from '@angular/core';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class TelegramBotApiService {
 
   private url: string = 'https://api.telegram.org'
+  private token: string
 
   constructor(private http: HttpClient) { }
 
-  public getMe(token: string): Observable<User> {
-    return this.http.get<Response<User>>(`${this.url}/bot${token}/getMe`)
+  public setToken(newToken: string) { this.token = newToken }
+
+  /**
+   * A simple method for testing your bot's auth token. 
+   * Requires no parameters. Returns basic information 
+   * about the bot in form of a User object.
+   */
+  public getMe(): Observable<User> {
+    return this.http.get<Response<User>>(`${this.url}/bot${this.token}/getMe`)
+
+                    //.pipe(catchError(this.handleError<Hero[]>('getHeroes', [])))
+
                     .pipe<User>(map(response => response.result))
+
   }
 
-  public getUpdates(token: string): Observable<Update> {
-    return this.http.get<Response<Update>>(`${this.url}/bot${token}/getUpdates`)
-                    .pipe<Update>(map(response => response.result))
+  /**
+   * Use this method to receive incoming updates using long
+   * polling (wiki). An Array of Update objects is returned.
+   */
+  public getUpdates(offset: number): Observable<Update[]> {
+    return this.http.get<Response<Update[]>>(`${this.url}/bot${this.token}/getUpdates?offset=${offset}`)
+                    .pipe<Update[]>(map(response => response.result))
+  }
+
+  /**
+   * Use this method to send text messages.
+   * On success, the sent Message is returned.
+   * @param chatId 
+   * @param msg 
+   */
+  public sendMessage(chatId: string, msg: string): Observable<Message> {
+    return this.http.get<Response<Message>>(`${this.url}/bot${this.token}/sendMessage?chat_id=${chatId}&text=${msg}`)
+                    .pipe<Message>(map(response => response.result))
   }
 
 }
 
-export class Response<T> {
+class Response<T> {
   ok: boolean
   result: T
 }
@@ -193,6 +220,7 @@ export class Message {
   successful_payment: SuccessfulPayment  // Optional. Message is a service message about a successful payment, information about the payment. More about payments »
   connected_website: string              // Optional. The domain name of the website on which the user has logged in. More about Telegram Login »
   passport_data: PassportData            // Optional. Telegram Passport data
+
 }
 
 /**

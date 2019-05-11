@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TelegramBotApiService, User } from '../telegram-bot-api.service';
 
 @Component({
   selector: 'tb-navigator',
@@ -30,36 +29,32 @@ import { TelegramBotApiService, User } from '../telegram-bot-api.service';
                     *ngIf="isHandset$ | async">
               <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
             </button>
-            <tb-token class="token"></tb-token>
+            <tb-token class="token"
+                      [token]="'<put your bot token here>'"
+                      (disconnected)="chats.disconnected()"
+                      (connected)="chats.connected()"></tb-token>
           </mat-toolbar-row>
         </mat-toolbar>
-        <!-- Add Content Here -->
-
+        <tb-chats #chats></tb-chats>
       </mat-sidenav-content>
     </mat-sidenav-container>`,
   styles: [ `
-    .sidenav-container { height: 100% }
-    .sidenav { width: 200px }
-    .sidenav .mat-toolbar { background: inherit }
-    .mat-toolbar.mat-primary { position: sticky; top: 0; z-index: 1 }
-    .mat-toolbar-row, .mat-toolbar-single-row { height: 100px }
-    .token { flex: 1 }
-    ` ]
-})
-export class NavigatorComponent implements OnInit {
+    .sidenav-container{ height: 100% }
+    .sidenav{ width: 200px }
+    .sidenav .mat-toolbar{ background: inherit }
+    .mat-toolbar.mat-primary{ position: sticky; top: 0; z-index: 1 }
+    .mat-toolbar-row, .mat-toolbar-single-row{ height: 100px }
 
-  name: string
+    .token{ flex: 1 1 }
+
+    ` ] })
+export class NavigatorComponent implements OnInit {
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
                                                            .pipe(map(result => result.matches));
 
-  constructor(private breakpointObserver: BreakpointObserver, private telegram: TelegramBotApiService) { }
+  constructor(private breakpointObserver: BreakpointObserver) { }
 
-  ngOnInit() {
-    // this.telegram.getMe()
-    //              .subscribe((user: User) => 
-    //                           (console.log(user), this.name = `@${user.username} (${user.first_name})`))
-  }
-
+  ngOnInit() {  }
 
 }

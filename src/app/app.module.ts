@@ -7,17 +7,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigatorComponent } from './navigator/navigator.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, 
-         MatSlideToggleModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+         MatSlideToggleModule, MatFormFieldModule, MatInputModule, MatSnackBarModule, MatTabsModule } from '@angular/material';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { TokenComponent } from './token/token.component';
+import { ChatsComponent } from './chats/chats.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigatorComponent,
-    TokenComponent ],
+    TokenComponent,
+    ChatsComponent ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,6 +33,8 @@ import { TokenComponent } from './token/token.component';
     MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSnackBarModule,
+    MatTabsModule,
 
     HttpClientModule,
     FormsModule ],
